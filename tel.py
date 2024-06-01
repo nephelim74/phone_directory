@@ -1,36 +1,8 @@
-
-
-def work_with_phonebook():
-    choice=show_menu()
-    phone_book=read_txt('phonebook.txt')
-    while (choice!=7):
-        if choice==1:
-            print_result(phone_book)
-        elif choice==2:
-            last_name=input('Введите Фаилию абонента: ')
-            print(find_by_subscr(phone_book,last_name, 0))
-        elif choice==3:
-            tel_number=input('Введите номер телефона: ')
-            print(find_by_subscr(phone_book,tel_number, 2))
-        elif choice==4:
-            subscriber_data = []
-            fields=['Фамилия', 'Имя', 'Телефон', 'Описание']
-            for i in range(0,4):
-               subscriber_data.append(str(input(f'{fields[i]}')))
-            # subscriber_data=input('Введите через запятую: Фамилию, Имя, номер телефона, Описание  ')
-            phone_book.append(add_new_suscriber(subscriber_data, phone_book))
-            # print(phone_book)
-        # elif choice==5:
-        #     number=input('number ')
-        #     print(find_by_number(phone_book,number))
-        elif choice==6:
-            write_txt('phonebook.txt',phone_book)
-        elif choice==7:
-            choice = co_out()
-        choice=show_menu()
-
+import subprocess
+import csv
 def co_out():
-    return 7
+    return ''
+
 
 def print_result(phb):
     print("Телефонный справочник")
@@ -42,22 +14,23 @@ def print_result(phb):
         for teg1, teg2 in ph_dic.items():
             print(f'{teg1}: {teg2}')
         print(fine_woll)
-
+        
 def find_by_subscr(phone_book, value , flag):
     if flag == 0: print('Поиск по Фамилии')
     else: print('Поиск по Номеру')
     for i in range(0, len(phone_book)):
         
-        # print([m for m in phone_book[i].values()][0])
+        # print(f'{int([m for m in phone_book[i].values()][flag])} {int(value)}')
         # print(value)
         if [m for m in phone_book[i].values()][flag] == value:
             res = '--------------------\n'
             for teg1, teg2 in phone_book[i].items():
+                
                 res =  f'{res} {teg1}: {teg2} \n'
             res = f'{res} --------------------\n'
-        else: res = 'Абонент не найден \n' 
+    if res == '': res = 'Абонент не найден \n' 
     # print(res)
-    return res     
+    return res
 
 def add_new_suscriber(subscriber_data, phone_book):
     fields=['Фамилия', 'Имя', 'Телефон', 'Описание']
@@ -70,19 +43,6 @@ def add_new_suscriber(subscriber_data, phone_book):
         print("------")
     # print(phone_book)
     return record
-
-
-def show_menu():
-    print("\nВыберите необходимое действие:\n"
-          "1. Отобразить весь справочник\n"
-          "2. Найти абонента по фамилии\n"
-          "3. Найти абонента по номеру телефона\n"
-          "4. Добавить абонента в справочник\n"
-          "5. Сохранить отчет\n"
-          "6. Сохранить в БД\n"
-          "7. Закончить работу\n")
-    choice = int(input())
-    return choice
 
 def read_txt(filename): 
     phone_book=[]
@@ -105,4 +65,59 @@ def write_txt(filename , phone_book):
                 s = s + v + ','
             phout.write(f'{s[:-1]}\n')
 
+def copy_to_file(in_file, out_file):
+    bd_tel = open(in_file,"r", encoding='utf-8')
+    out_csv = open(out_file, "w", encoding='utf-8')
+
+    line_count = 0
+    for line in bd_tel:
+        if line != "\n":
+
+            print(line)
+            out_csv.write(line)
+            line_count += 1
+
+    bd_tel.close()
+    out_csv.close()
+    return f'Cформирован файл {out_file}'
+def show_menu():
+    print("\nВыберите необходимое действие:\n"
+          "1. Отобразить весь справочник\n"
+          "2. Найти абонента по фамилии\n"
+          "3. Найти абонента по номеру телефона\n"
+          "4. Добавить абонента в справочник\n"
+          "5. Сохранить отчет\n"
+          "6. Сохранить в БД\n"
+          "7. Закончить работу\n")
+    choice = int(input())
+    return choice
+def work_with_phonebook():
+    choice=show_menu()
+    phone_book=read_txt('phonebook.txt')
+    while (choice!=7):
+        if choice==1:
+            print_result(phone_book)
+        elif choice==2:
+            last_name=input('Введите Фаилию абонента: ')
+            print(find_by_subscr(phone_book,last_name, 0))
+        elif choice==3:
+            tel_number=input('Введите номер телефона: ')
+            print(find_by_subscr(phone_book,tel_number, 2))
+        elif choice==4:
+            subscriber_data = []
+            fields=['Фамилия', 'Имя', 'Телефон', 'Описание']
+            for i in range(0,4):
+               subscriber_data.append(str(input(f'{fields[i]}')))
+            # subscriber_data=input('Введите через запятую: Фамилию, Имя, номер телефона, Описание  ')
+            phone_book.append(add_new_suscriber(subscriber_data, phone_book))
+            print(phone_book)
+        elif choice==5:
+            out_file=input('Ведите название файла: ')
+            print(copy_to_file('phonebook.txt', out_file))
+        elif choice==6:
+            write_txt('phonebook.txt',phone_book)
+        elif choice==7:
+            choice = co_out()
+        choice=show_menu()
+        
 work_with_phonebook()
